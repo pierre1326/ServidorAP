@@ -8,19 +8,16 @@ module.exports = function(mongoose) {
   	password : String,
   	idProductor : Number
   });
-
   var ordenSchema = new mongoose.Schema({
   	cantidad: Number,
   	estado: String,
   	nombreProductor: String
   });
-
   var paqueteSchema = new mongoose.Schema({
   	codigoPaquete: Number,
   	fechaRecibido: Number,
   	fechaEntregado: Number
   });
-
   var produccionSchema = new mongoose.Schema({
   	cantidadAbono: Number,
   	cantidadEnergia: Number,

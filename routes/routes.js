@@ -102,36 +102,36 @@ module.exports = function(app) {
 
   app.get('/reportProduccion', (req, res) => {
     let produccion = models['Produccion'];
-    produccion.find({}).toArray((err, result) => {
+    produccion.find().exec((err, results) => {
       if(err) {
         res.send({status: "Error with database"});
       }
       else {
-        res.send({result: result});
+        res.send(results);
       }
     });
   });
 
   app.get('/reportOrden', (req, res) => {
     let orden = models['Orden'];
-    orden.find({}).toArray((err, result) => {
+    orden.find().exec((err, results) => {
       if(err) {
         res.send({status: "Error with database"});
       }
       else {
-        res.send({result: result});
+        res.send(results);
       }
     });
   });
 
   app.get('/reportPaquete', (req, res) => {
     let paquete = models['Paquete'];
-    paquete.find({}).toArray((err, result) => {
+    paquete.find().exec((err, results) => {
       if(err) {
         res.send({status: "Error with database"});
       }
       else {
-        res.send({result: result});
+        res.send(results);
       }
     });
   });
