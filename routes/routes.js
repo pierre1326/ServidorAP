@@ -1,8 +1,99 @@
 //Routes
 
-module.exports = function(app) {
+module.exports = function(app, mongoose) {
 
   //CRUD Schemas
+
+  app.post('/query', (req, res) => {
+    let body = req.body;
+    let ordenCompra = models['OrdenCompra'];
+    ordenCompra.aggregate([
+      {
+        "$lookup": {
+          "from": "boletos",
+          "localField": "idBoleto",
+          "foreignField": "_id",
+          "as": "boletos"
+        }
+      },
+      {
+        "$unwind": "$boletos"
+      },
+      {
+        "$lookup": {
+          "from": "vuelos",
+          "localField": "boletos.idVuelo",
+          "foreignField": "_id",
+          "as": "boletos.vuelo"
+        }
+      },
+      {
+        "$unwind": "$boletos.vuelo"
+      },
+      {
+        "$match": {
+          "cedulaPasajero": req.body.cedulaPasajero,
+          "boletos.vuelo.idEstado": req.body.idEstado,
+          "boletos.FechaInicial": {"$gte": req.body.fechaMinima, "$lt" : req.body.fechaMaxima},
+          "boletos.FechaFinal": {"$gte": req.body.fechaMinima, "$lt" : req.body.fechaMaxima}
+        }
+      },
+      {
+        "$project": {
+          "_id": 0,
+          "boletos.vuelo.nombre": 1,
+          "boletos.vuelo.origen": 1,
+          "boletos.vuelo.destino": 1,
+          "boletos.vuelo.itinerario": 1,
+          "boletos.vuelo.precio": 1,
+          "boletos.vuelo.idEstado": 1,
+          "boletos.vuelo.capacidadMaxima": 1,
+          "boletos.vuelo.idAerolinea": 1,
+          "boletos.vuelo.restricciones": 1,
+        }
+      },
+    ], (err, results) => {
+      res.send(results);
+    });
+  });
+
+  app.get('/insert', (req, res) => {
+    let vuelo = models['Vuelos'];
+    let newVuelo = new vuelo({
+      nombre : "Vuelo 1",
+      origen: "Estados Unidos",
+      destino: "Japon",
+      idEstado: "A tiempo"
+    });
+    newVuelo.save((err, resp) => {
+      let boleto = models['Boletos'];
+      let newBoleto = new boleto({
+        origen: "Estados Unidos",
+        destino: "Japon",
+        idVuelo: resp['_id'],
+        FechaInicial: 1572933600,
+        FechaFinal: 1573815800
+      });
+      newBoleto.save((err, resp2) => {
+        let ordenCompra = models['OrdenCompra'];
+        let newOrden = new ordenCompra({
+          cedulaPasajero: "1",
+          idBoleto: resp2['_id']
+        });
+        newOrden.save((err, resp3) => {
+          res.send(resp3);
+        })
+      })
+    });
+  });
+
+  app.post('/date', (req, res) => {
+    let body = req.body;
+    let stringDate = body.date;
+    let date = new Date(stringDate);
+    let timeStamp = date.getTime();
+    res.send({date: timeStamp});
+  });
 
   app.post('/newProductor', (req, res) => {
     let body = req.body;

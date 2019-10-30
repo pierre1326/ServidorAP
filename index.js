@@ -26,7 +26,7 @@ mongoose.connect(values['mongoUri'], {useNewUrlParser : true}, (err) => {
 });
 
 //Routes
-require('./routes/routes.js')(app);
+require('./routes/routes.js')(app, mongoose);
 
 //Init server
 app.listen(values.port, function() {
