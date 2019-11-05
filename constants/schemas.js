@@ -15,8 +15,8 @@ module.exports = function(mongoose) {
   });
   var paqueteSchema = new mongoose.Schema({
   	codigoPaquete: Number,
-  	fechaRecibido: Number,
-  	fechaEntregado: Number
+  	fechaRecibido: String,
+  	fechaEntregado: String
   });
   var produccionSchema = new mongoose.Schema({
   	cantidadAbono: Number,
@@ -34,8 +34,8 @@ module.exports = function(mongoose) {
     origen: String,
     destino: String,
     idVuelo: ObjectId,
-    FechaInicial: Number,
-    FechaFinal: Number
+    FechaInicial: String,
+    FechaFinal: String
   });
   var ordenCompraSchema = new mongoose.Schema({
     cedulaPasajero: String,
